@@ -5,9 +5,30 @@ const Ticket = require("../model/Ticket");
 const cloudinary = require("cloudinary").v2;
 
 const fileUpload = require("express-fileupload");
-const convertToBase64 = require("../utils/convertToBase64");
+// const convertToBase64 = require("../utils/convertToBase64");
 
-router.post("/events/create", async (req, res) => {
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+const convertToBase64 = (file) => {
+  return `data:${file.mimetype};base64,${file.data.toString("base64")}`;
+};
+
+router.post("/upload", fileUpload(), async (req, res) => {
+  try {
+    const pictureToUpload = req.files.picture;
+    const result = await cloudinary.uploader.upload(
+      convertToBase64(pictureToUpload)
+    );
+    return res.json(result);
+  } catch (error) {
+    return res.json({error: error.message});
+  }
+});
+
+router.post("/events/create", fileUpload(), async (req, res) => {
   try {
     const {name, date} = req.body;
     const event = await Event.findOne({
@@ -27,8 +48,26 @@ router.post("/events/create", async (req, res) => {
           mezzanine: mezzanine,
         },
       });
+      // console.log(req.files);
+      if (req.files?.event_img) {
+        const result = await cloudinary.uploader.upload(
+          convertToBase64(req.files.event_img)
+        );
+        console.log(result);
+        newEvent.event_img = result;
+      }
       await newEvent.save();
-      res.json({message: "Event successfully created"});
+
+      res.json({
+        message: "Event successfully created",
+        date: date,
+        name: name,
+        seats: {
+          orchestre: orchestre,
+          mezzanine: mezzanine,
+        },
+        event_img: newEvent.event_img,
+      });
     }
   } catch (error) {
     res.json({message: error.message});

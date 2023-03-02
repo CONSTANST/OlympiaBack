@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Event = mongoose.model("Event", {
   date: String,
   name: String,
-  event_img: {type: mongoose.Schema.Types.Mixed, default: {}},
+  event_img: Object,
   seats: {
     orchestre: Number,
     mezzanine: Number,
