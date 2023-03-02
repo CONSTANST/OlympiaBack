@@ -30,6 +30,7 @@ router.post("/upload", fileUpload(), async (req, res) => {
 
 router.post("/events/create", fileUpload(), async (req, res) => {
   try {
+    console.log(req.body);
     const {name, date} = req.body;
     const event = await Event.findOne({
       name: name,
@@ -38,7 +39,9 @@ router.post("/events/create", fileUpload(), async (req, res) => {
     if (event) {
       res.json("This event aldready existe");
     } else {
-      const {orchestre, mezzanine} = req.body.seats;
+      const {orchestre, mezzanine} = req.body;
+      console.log(orchestre);
+      console.log(mezzanine);
 
       const newEvent = new Event({
         date: date,
@@ -56,7 +59,7 @@ router.post("/events/create", fileUpload(), async (req, res) => {
         console.log(result);
         newEvent.event_img = result;
       }
-      await newEvent.save();
+      // await newEvent.save();
 
       res.json({
         message: "Event successfully created",
