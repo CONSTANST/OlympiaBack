@@ -30,7 +30,6 @@ router.post("/upload", fileUpload(), async (req, res) => {
 
 router.post("/events/create", fileUpload(), async (req, res) => {
   try {
-    console.log(req.body);
     const {name, date} = req.body;
     const event = await Event.findOne({
       name: name,
@@ -45,10 +44,12 @@ router.post("/events/create", fileUpload(), async (req, res) => {
         name: name,
         orchestrePrice: orchestrePrice,
         mezzaninePrice: mezzaninePrice,
-        seats: {
-          orchestre: orchestre,
-          mezzanine: mezzanine,
-        },
+        seats: [
+          {
+            orchestre: orchestre,
+            mezzanine: mezzanine,
+          },
+        ],
       });
       // console.log(req.files);
       if (req.files?.event_img) {
@@ -69,6 +70,7 @@ router.post("/events/create", fileUpload(), async (req, res) => {
           mezzanine: mezzanine,
         },
         event_img: newEvent.event_img,
+        id: newEvent.id,
       });
     }
   } catch (error) {
@@ -89,7 +91,7 @@ router.get("/events", async (req, res) => {
 });
 router.get("/events/:id", async (req, res) => {
   try {
-    const event = await Event.findById(req.query._id);
+    const event = await Event.findById(req.params.id);
     if (event) {
       res.json(event);
     } else {
