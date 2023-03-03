@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const Event = mongoose.model("Event", {
-  date: Date,
+  date: String,
   name: String,
   event_img: Object,
   seats: [

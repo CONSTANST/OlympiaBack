@@ -102,7 +102,7 @@ router.get("/events/:id", async (req, res) => {
   }
 });
 
-router.get("/events/availabilities", async (req, res) => {
+router.get("/event/availabilities", async (req, res) => {
   try {
     const event = await Event.find({
       date: req.query.date,
@@ -117,6 +117,7 @@ router.get("/events/availabilities", async (req, res) => {
     res.json({message: error.message});
   }
 });
+
 router.put("/event/modify/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;
