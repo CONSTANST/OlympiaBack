@@ -39,13 +39,12 @@ router.post("/events/create", fileUpload(), async (req, res) => {
     if (event) {
       res.json("This event aldready existe");
     } else {
-      const {orchestre, mezzanine} = req.body;
-      console.log(orchestre);
-      console.log(mezzanine);
-
+      const {orchestre, mezzanine, orchestrePrice, mezzaninePrice} = req.body;
       const newEvent = new Event({
         date: date,
         name: name,
+        orchestrePrice: orchestrePrice,
+        mezzaninePrice: mezzaninePrice,
         seats: {
           orchestre: orchestre,
           mezzanine: mezzanine,
@@ -59,7 +58,7 @@ router.post("/events/create", fileUpload(), async (req, res) => {
         console.log(result);
         newEvent.event_img = result;
       }
-      // await newEvent.save();
+      await newEvent.save();
 
       res.json({
         message: "Event successfully created",

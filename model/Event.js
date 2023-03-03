@@ -1,12 +1,26 @@
 const mongoose = require("mongoose");
 
 const Event = mongoose.model("Event", {
-  date: String,
+  date: Date,
   name: String,
   event_img: Object,
   seats: {
-    orchestre: Number,
-    mezzanine: Number,
+    orchestre: {
+      type: Number,
+      required: true,
+    },
+    mezzanine: {
+      type: Number,
+      required: true,
+    },
+  },
+  orchestrePrice: {
+    type: Number,
+    required: true,
+  },
+  mezzaninePrice: {
+    type: Number,
+    required: true,
   },
 });
 module.exports = Event;
