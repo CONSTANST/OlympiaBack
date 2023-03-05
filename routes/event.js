@@ -121,11 +121,15 @@ router.get("/event/availabilities", async (req, res) => {
 router.put("/event/modify/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;
-    const {date, name, category} = req.body;
+    const {date, name, orchestre, mezzanine, orchestrePrice, mezzaninePrice} =
+      req.body;
     const eventToModify = await Event.findById(eventId);
     if (date) eventToModify.date = date;
     if (name) eventToModify.name = name;
-    if (category) eventToModify.caterogy = category;
+    if (orchestre) eventToModify.seats[0].orchestre = orchestre;
+    if (mezzanine) eventToModify.seats[0].mezzanine = mezzanine;
+    if (orchestrePrice) eventToModify.orchestrePrice = orchestrePrice;
+    if (mezzaninePrice) eventToModify.mezzaninePrice = mezzaninePrice;
     await eventToModify.save();
     res.status(200).json(eventToModify);
   } catch (error) {
