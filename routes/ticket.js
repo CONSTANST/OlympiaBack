@@ -25,16 +25,19 @@ router.post("/tickets/book", async (req, res) => {
       return res.json({message: "Evenement non trouver"});
     }
 
-    if (!isAfter(new Date(), new Date(event.date))) {
+    if (isAfter(new Date(), new Date(event.date))) {
       return res.status(400).json({
         message:
           " Vous ne pouvez pas reverser de tickets pour un évenement déjà passé",
       });
     }
-    if (event.seats[category] < seats) {
-      return res.json({message: "Not enought seats available"});
+    if (event.seats[0].category < seats) {
+      return res.json({
+        message: "Not enought seats available",
+      });
     }
-    event.seats[category] = event.seats[category] - seats;
+
+    event.seats[0][category] -= seats;
     await event.save();
 
     const tickets = new Ticket({
@@ -76,11 +79,10 @@ router.delete("/tickets/delete/:ticketsId", async (req, res) => {
 
     if (tickets) {
       const event = await Event.findById(tickets.event);
-      const category = event.seats[tickets.category];
 
-      event.seats[category] = event.seats[category] + tickets.seats;
+      event.seats[0][tickets.category] += tickets.seats;
 
-      await eventToUpdate.save();
+      await event.save();
       await Ticket.findByIdAndDelete(tickets);
       res.json(
         `${tickets.seats} place(s) a (ont) été annuler pour ${event.name}`
