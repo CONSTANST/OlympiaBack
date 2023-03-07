@@ -10,7 +10,7 @@ const fileUpload = require("express-fileupload");
 cloudinary.config({
   cloud_name: "dxnwnvnas",
   api_key: "527418596626235",
-  api_secret: "JAo7A0spdSOo7L9FRv7PmXbxk2k",
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const convertToBase64 = (file) => {
   return `data:${file.mimetype};base64,${file.data.toString("base64")}`;
