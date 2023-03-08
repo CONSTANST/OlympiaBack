@@ -54,13 +54,18 @@ router.post("/events/create", fileUpload(), async (req, res) => {
           },
         ],
       });
-      // console.log(req.files);
-      if (req.files?.event_img) {
+      console.log("req.files :", req.files);
+      if (req.files.event_image) {
         const result = await cloudinary.uploader.upload(
-          convertToBase64(req.files.event_img)
+          convertToBase64(req.files.event_image),
+          {
+            folder: `api/Olymplia-v2/${newEvent._id}`,
+            public_id: "preview",
+          }
         );
-        console.log(result);
-        newEvent.event_img = result;
+        console.log("result :", result);
+        newEvent.event_image = result;
+        newEvent.event_img.push(result);
       }
       await newEvent.save();
 
