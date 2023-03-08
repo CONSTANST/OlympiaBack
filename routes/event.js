@@ -133,6 +133,14 @@ router.put("/event/modify/:eventId", async (req, res) => {
     if (mezzanine) eventToModify.seats[0].mezzanine = mezzanine;
     if (orchestrePrice) eventToModify.orchestrePrice = orchestrePrice;
     if (mezzaninePrice) eventToModify.mezzaninePrice = mezzaninePrice;
+    if (req.files?.files) {
+      const result = await cloudinary.uploader.upload(
+        convertToBase64(req.files.event_img)
+      );
+      console.log(result);
+      newEvent.event_img = result;
+    }
+    await newEvent.save();
     await eventToModify.save();
     res.status(200).json(eventToModify);
   } catch (error) {
