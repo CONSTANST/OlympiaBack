@@ -6,14 +6,19 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 mongoose.set("strictQuery", false);
 mongoose.connect("mongodb://127.0.0.1/OlympiaV2");
+
 const routerEvent = require("./routes/event");
 const routerTickets = require("./routes/ticket");
 const routerUser = require("./routes/user");
+const routerPayment = require("./routes/payment");
+
 app.use(routerEvent);
 app.use(routerTickets);
 app.use(routerUser);
+app.use(routerPayment);
 
 app.all("*", (req, res) => {
   res.json({message: "hello, this page doesn't exist"});
