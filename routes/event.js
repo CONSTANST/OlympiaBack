@@ -54,7 +54,7 @@ router.post("/events/create", fileUpload(), async (req, res) => {
           },
         ],
       });
-      console.log("req.files :", req.files);
+
       if (req.files.event_image) {
         const result = await cloudinary.uploader.upload(
           convertToBase64(req.files.event_image),
@@ -63,7 +63,7 @@ router.post("/events/create", fileUpload(), async (req, res) => {
             public_id: "preview",
           }
         );
-        console.log("result :", result);
+
         newEvent.event_image = result;
         newEvent.event_img.push(result);
       }
@@ -126,9 +126,10 @@ router.get("/event/availabilities", async (req, res) => {
   }
 });
 
-router.put("/event/modify/:eventId", async (req, res) => {
+router.put("/event/modify/:eventId", fileUpload(), async (req, res) => {
   try {
     const eventId = req.params.eventId;
+
     const {date, name, orchestre, mezzanine, orchestrePrice, mezzaninePrice} =
       req.body;
     const eventToModify = await Event.findById(eventId);
@@ -138,14 +139,16 @@ router.put("/event/modify/:eventId", async (req, res) => {
     if (mezzanine) eventToModify.seats[0].mezzanine = mezzanine;
     if (orchestrePrice) eventToModify.orchestrePrice = orchestrePrice;
     if (mezzaninePrice) eventToModify.mezzaninePrice = mezzaninePrice;
-    if (req.files?.files) {
+
+    if (req.files?.event_image) {
       const result = await cloudinary.uploader.upload(
-        convertToBase64(req.files.event_img)
+        convertToBase64(req.files.event_image)
       );
-      console.log(result);
-      newEvent.event_img = result;
+
+      eventToModify.event_image = result;
+      eventToModify.event_img.push(result);
     }
-    await newEvent.save();
+
     await eventToModify.save();
     res.status(200).json(eventToModify);
   } catch (error) {
