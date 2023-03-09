@@ -8,8 +8,8 @@ const fileUpload = require("express-fileupload");
 // const convertToBase64 = require("../utils/convertToBase64");
 
 cloudinary.config({
-  cloud_name: "dxnwnvnas",
-  api_key: "527418596626235",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const convertToBase64 = (file) => {
@@ -19,11 +19,9 @@ const convertToBase64 = (file) => {
 router.post("/upload", fileUpload(), async (req, res) => {
   try {
     const pictureToUpload = req.files.picture;
-    // console.log("picture :", pictureToUpload);
     const result = await cloudinary.uploader.upload(
       convertToBase64(pictureToUpload)
     );
-    console.log("result: ");
     return res.json(result);
   } catch (error) {
     console.log("erreur", error);

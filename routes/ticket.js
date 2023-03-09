@@ -60,7 +60,6 @@ router.post("/tickets/book", async (req, res) => {
 router.post("/tickets", async (req, res) => {
   try {
     const tickets = await Ticket.find({mail: req.body.mail}).populate("event");
-    console.log(tickets);
     if (tickets) {
       res.json(tickets);
     } else {
