@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb://127.0.0.1/OlympiaV2");
+mongoose.connect(process.env.API_MONGO_KEY);
 
 const routerEvent = require("./routes/event");
 const routerTickets = require("./routes/ticket");
